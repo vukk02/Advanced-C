@@ -540,7 +540,231 @@ int main() {
 ```c
 Pointer is NULL
 ```
+# Bài 5: Extern - Static - Volatile - Register
+## 1. EXTERN
+Khái niệm Extern trong ngôn ngữ lập trình C được sử dụng để thông báo rằng một biến hoặc hàm đã được khai báo ở một nơi khác trong chương trình hoặc trong một file nguồn khác. Điều này giúp chương trình hiểu rằng biến hoặc hàm đã được định nghĩa và sẽ được sử dụng từ một vị trí khác, giúp quản lý sự liên kết giữa các phần khác nhau của chương trình hoặc giữa các file nguồn.
 
+## Static local variables
+Khi static được sử dụng với local variables (biến cục bộ - khai báo biến trong một hàm), nó giữ giá trị của biến qua các lần gọi hàm và giữ phạm vi của biến chỉ trong hàm đó.
+
+```c
+#include <stdio.h>
+
+void exampleFunction() {
+    static int count = 0;  // Biến static giữ giá trị qua các lần gọi hàm
+    count++;
+    printf("Count: %d\n", count);
+}
+
+int main() {
+    exampleFunction();  // In ra "Count: 1"
+    exampleFunction();  // In ra "Count: 2"
+    exampleFunction();  // In ra "Count: 3"
+    return 0;
+}
+```
+```c
+Count: 1
+Count: 2
+Count: 3
+```
+## Static global variables
+Khi static được sử dụng với global variables ( biến toàn cục - khai báo biến bên ngoài hàm), nó hạn chế phạm vi của biến đó chỉ trong file nguồn hiện tại.
+Ứng dụng: dùng để thiết kế các file thư viện.
+
+```c
+#include <math.h>
+
+
+typedef struct {
+    float x1;
+    float x2;
+} Equation;
+
+static int A,B,C;
+
+void inputCoefficients(int a, int b, int c) {
+A = a;
+B = b;
+C = c;
+}
+
+static float calculateDelta() 
+{
+    return B * B - 4 * A * C;
+}
+
+void result(Equation *equation) {
+    float delta = calculateDelta();
+    if (delta > 0) {
+        equation->x1 = (-B + sqrt(delta)) / (2 * A);
+        equation->x2 = (-B - sqrt(delta)) / (2 * A);
+    } else if (delta == 0) {
+        equation->x1 = equation->x2 = -B / (2 * A);
+    } else {
+        equation->x1 = equation->x2 = -1;
+    }
+}
+```
+## 3.Volatile
+Từ khóa volatile trong ngôn ngữ lập trình C được sử dụng để báo hiệu cho trình biên dịch rằng một biến có thể thay đổi ngẫu nhiên, ngoài sự kiểm soát của chương trình. Việc này ngăn chặn trình biên dịch tối ưu hóa hoặc xóa bỏ các thao tác trên biến đó, giữ cho các thao tác trên biến được thực hiện như đã được định nghĩa.
+
+```c
+#include "stm32f10x.h"
+
+volatile int i = 0;
+int a = 100;
+
+int main()
+{
+	
+	while(1)
+	{
+		i = *((int*) 0x20000000);
+		if (i > 0)
+		{
+			break;
+		}
+		
+	}
+	a = 200;
+}
+
+```
+## 4. Register
+Trong ngôn ngữ lập trình C, từ khóa register được sử dụng để chỉ ra ý muốn của lập trình viên rằng một biến được sử dụng thường xuyên và có thể được lưu trữ trong một thanh ghi máy tính, chứ không phải trong bộ nhớ RAM. Việc này nhằm tăng tốc độ truy cập. Tuy nhiên, lưu ý rằng việc sử dụng register chỉ là một đề xuất cho trình biên dịch và không đảm bảo rằng biến sẽ được lưu trữ trong thanh ghi. Trong thực tế, trình biên dịch có thể quyết định không tuân thủ lời đề xuất này.
+
+![register](https://github.com/vukk02/Advanced-C/assets/126554839/4ef7e78b-8953-4962-8e56-d7e086a12882)
+
+```c
+#include <stdio.h>
+#include <time.h>
+
+int main() {
+    // Lưu thời điểm bắt đầu
+    clock_t start_time = clock();
+    int i;
+
+    // Đoạn mã của chương trình
+    for (i = 0; i < 2000000; ++i) {
+        // Thực hiện một số công việc bất kỳ
+    }
+
+    // Lưu thời điểm kết thúc
+    clock_t end_time = clock();
+
+    // Tính thời gian chạy bằng miligiây
+    double time_taken = ((double)(end_time - start_time)) / CLOCKS_PER_SEC;
+
+    printf("Thoi gian chay cua chuong trinh: %f giay\n", time_taken);
+
+    return 0;
+}
+
+```
+# Bài 6: Goto - setjmp.h
+## Goto
+goto là một từ khóa trong ngôn ngữ lập trình C, cho phép chương trình nhảy đến một nhãn (label) đã được đặt trước đó trong cùng một hàm. Mặc dù nó cung cấp khả năng kiểm soát flow của chương trình, nhưng việc sử dụng goto thường được xem là không tốt vì nó có thể làm cho mã nguồn trở nên khó đọc và khó bảo trì.
+
+```c
+#include <stdio.h>
+
+int main() {
+    int i = 0;
+
+    // Đặt nhãn
+    start:
+        if (i >= 5) {
+            goto end;  // Chuyển control đến nhãn "end"
+        }
+
+        printf("%d ", i);
+        i++;
+
+        goto start;  // Chuyển control đến nhãn "start"
+
+    // Nhãn "end"
+    end:
+        printf("\n");
+
+    return 0;
+}
+```
+## setjmp.h
+setjmp.h là một thư viện trong ngôn ngữ lập trình C, cung cấp hai hàm chính là setjmp và longjmp. Cả hai hàm này thường được sử dụng để thực hiện xử lý ngoại lệ trong C, mặc dù nó không phải là một cách tiêu biểu để xử lý ngoại lệ trong ngôn ngữ này.
+
+```c
+#include <stdio.h>
+#include <setjmp.h>
+
+jmp_buf buf;
+int exception_code;
+
+#define TRY if ((exception_code = setjmp(buf)) == 0) 
+#define CATCH(x) else if (exception_code == (x)) 
+#define THROW(x) longjmp(buf, (x))
+
+
+double divide(int a, int b) {
+    if (b == 0) {
+        THROW(1); // Mã lỗi 1 cho lỗi chia cho 0
+    }
+    return (double)a / b;
+}
+
+int main() {
+    int a = 10;
+    int b = 0;
+    double result = 0.0;
+
+    TRY {
+        result = divide(a, b);
+        printf("Result: %f\n", result);
+    } CATCH(1) {
+        printf("Error: Divide by 0!\n");
+    }
+
+
+    // Các xử lý khác của chương trình
+    return 0;
+}
+```
+# Bài 7: Bitmask
+## NOT bitwise
+Dùng để thực hiện phép NOT bitwise trên từng bit của một số. Kết quả là bit đảo ngược của số đó.
+
+```c
+int result = ~num ;
+```
+## AND bitwise
+Dùng để thực hiện phép AND bitwise giữa từng cặp bit của hai số. Kết quả là 1 nếu cả hai bit tương ứng đều là 1, ngược lại là 0.
+
+```c
+int result = num1 & num2;
+```
+## OR bitwise
+Dùng để thực hiện phép OR bitwise giữa từng cặp bit của hai số. Kết quả là 1 nếu có hơn một bit tương ứng là 1.
+
+```c
+int result = num1 | num2;
+```
+## XOR bitwise
+Dùng để thực hiện phép XOR bitwise giữa từng cặp bit của hai số. Kết quả là 1 nếu chỉ có một bit tương ứng là 1.
+
+```c
+int result = num1 ^ num2;
+```
+## Shift left và Shift right bitwise
+Dùng để di chuyển bit sang trái hoặc sang phải.
+
+Trong trường hợp <<, các bit ở bên phải sẽ được dịch sang trái, và các bit trái cùng sẽ được đặt giá trị 0.
+
+Trong trường hợp >>, các bit ở bên trái sẽ được dịch sang phải, và các bit phải cùng sẽ được đặt giá trị 0 hoặc 1 tùy thuộc vào giá trị của bit cao nhất (bit dấu).
+
+```c
+int resultLeftShift = num << shiftAmount;
+int resultRightShift = num >> shiftAmount;
+```
 
 
 
