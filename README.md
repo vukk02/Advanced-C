@@ -193,6 +193,87 @@ int a = 10;
 
 #endif
 ```
+# Bài 2: STDARG - ASSERT
+## STDARG
+Header file có tên stdarg.h trong Thư viện C định nghĩa một kiểu biến va_list và 3 macro mà có thể được sử dụng để lấy các tham số trong một hàm khi số tham số là chưa được biết (ví dụ như số tham số là có thể biến đổi).
+
+- va_list: là một kiểu dữ liệu để đại diện cho danh sách các đối số biến đổi.
+- va_start: Bắt đầu một danh sách đối số biến đổi. Nó cần được gọi trước khi truy cập các đối số biến đổi đầu tiên.
+- va_arg: Truy cập một đối số trong danh sách. Hàm này nhận một đối số của kiểu được xác định bởi tham số thứ hai
+- va_end: Kết thúc việc sử dụng danh sách đối số biến đổi. Nó cần được gọi trước khi kết thúc hàm.
+
+![stdarg](https://github.com/vukk02/Advanced-C/assets/126554839/89cfef93-b138-48c1-a9b9-279b7d17d3a5)
+
+input
+
+```c
+#include <stdio.h>
+#include <stdarg.h>
+
+typedef enum {
+    TURN_ON,
+    TURN_OFF,
+    SET_LEVEL,
+    SEND_MESSAGE
+} CommandType;
+
+void sendCommand(CommandType command, ...) {
+    va_list args;
+    va_start(args, command);
+
+    switch (command) {
+        case TURN_ON:
+        case TURN_OFF: {
+            int deviceID = va_arg(args, int);
+            printf("Command: %s Device ID: %d\n", command == TURN_ON ? "Turn On" : "Turn Off", deviceID);
+            break;
+        }
+        case SET_LEVEL: {
+            int deviceID = va_arg(args, int);
+            int level = va_arg(args, int);
+            printf("Set Level of Device ID %d to %d\n", deviceID, level);
+            break;
+        }
+        case SEND_MESSAGE: {
+            char* message = va_arg(args, char*);
+            printf("Send Message: %s\n", message);
+            break;
+        }
+    }
+
+    va_end(args);
+}
+
+int main() {
+    sendCommand(TURN_ON, 1);
+    sendCommand(TURN_OFF, 2);
+    sendCommand(SET_LEVEL, 3, 75);
+    sendCommand(SEND_MESSAGE, "Hello World");
+    return 0;
+}
+```
+output
+```c
+Command: Turn On Device ID: 1
+Command: Turn Off Device ID: 2
+Set Level of Device ID 3 to 75
+Send Message: Hello World
+```
+## ASSERT
+- Cung cấp macro assert. 
+- Macro này được sử dụng để kiểm tra một điều kiện. 
+- Nếu điều kiện đúng (true), không có gì xảy ra và chương trình tiếp tục thực thi.
+- Nếu điều kiện sai (false), chương trình dừng lại và thông báo một thông điệp lỗi.
+- Dùng trong debug, dùng #define NDEBUG để tắt debug
+
+![assert](https://github.com/vukk02/Advanced-C/assets/126554839/d43c6613-1a59-40ad-ba4e-1bd8a582e71f)
+
+// Macro dùng để debug
+#define LOG(condition, cmd) assert(condition && #cmd)
+
+
+
+
 
    
 
