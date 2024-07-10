@@ -837,6 +837,72 @@ int main() {
 
 ```
 
+# Bài 8: Struct - Union
+## Struct
+Trong ngôn ngữ lập trình C, struct là một cấu trúc dữ liệu cho phép lập trình viên tự định nghĩa một kiểu dữ liệu mới bằng cách nhóm các biến có các kiểu dữ liệu khác nhau lại với nhau. struct cho phép tạo ra một thực thể dữ liệu lớn hơn và có tổ chức hơn từ các thành viên (members) của nó.
+
+'''c
+struct Example {
+    uint8_t a;  // 1 byte  
+    uint16_t b; // 2 byte
+    uint32_t c; // 4 byte
+};
+
+'''
+## Union
+Trong ngôn ngữ lập trình C, union là một cấu trúc dữ liệu giúp lập trình viên kết hợp nhiều kiểu dữ liệu khác nhau vào cùng một vùng nhớ. Mục đích chính của union là tiết kiệm bộ nhớ bằng cách chia sẻ cùng một vùng nhớ cho các thành viên của nó. Điều này có nghĩa là, trong một thời điểm, chỉ một thành viên của union có thể được sử dụng. Điều này được ứng dụng nhằm tiết kiệm bộ nhớ.
+
+'''c
+union Data {
+    uint8_t a;
+    uint16_t b;
+    uint32_t c;
+};
+'''
+## Ứng dụng kết hợp struct và union
+'''c
+#include <stdio.h>
+#include <stdint.h>
+#include <string.h>
+
+
+typedef union {
+    struct {
+        uint8_t id[2];
+        uint8_t data[4];
+        uint8_t check_sum[2];
+    } data;
+
+    uint8_t frame[8];
+
+} Data_Frame;
+
+
+int main(int argc, char const *argv[])
+{
+    Data_Frame transmitter_data;
+    
+    strcpy(transmitter_data.data.id, "10");
+    strcpy(transmitter_data.data.data, "1234");
+    strcpy(transmitter_data.data.check_sum, "70");
+
+		Data_Frame receiver_data;
+    strcpy(receiver_data.frame, transmitter_data.frame);
+	
+    
+    return 0;
+}
+'''
+
+# Bài 4: Memory layout
+Chương trình main.exe ( trên window), main.hex ( nạp vào vi điều khiển) được lưu ở bộ nhớ SSD hoặc FLASH. Khi nhấn run chương trình trên window ( cấp nguồn cho vi điều khiển) thì những chương trình này sẽ được copy vào bộ nhớ RAM để thực thi.
+## Text segment
+Mã máy:
+Chứa tập hợp các lệnh thực thi.
+Quyền truy cập: Text Segment thường có quyền đọc và thực thi, nhưng không có quyền ghi. 
+Lưu hằng số, con trỏ kiểu char
+Tất cả các biến lưu ở phần vùng Text đều không thể thay đổi giá trị mà chỉ được đọc.
+
 
 
 
