@@ -6,7 +6,7 @@ using namespace std;
 #define in(x,value) cout<<x; cin>>this->value;
 #define out(x,value) cout<<x<<this->value<<endl;
 
-class car
+class vehicle
 {
 protected:
     string model;
@@ -15,7 +15,7 @@ public:
     virtual void displayInfo()  = 0;
     virtual void inputInfo() = 0;
 };
-class sedan: public car
+class car: public vehicle
 {
 private:
     int a;
@@ -23,7 +23,7 @@ public:
     void displayInfo()  override;
     void inputInfo() override; 
 };
-class suv: public car
+class truck: public vehicle
 {
 private:
     int b;
@@ -31,27 +31,27 @@ public:
     void displayInfo()  override;
     void inputInfo() override; 
 };
-void sedan::inputInfo()
+void car::inputInfo()
 {
     in("a: ",a);
     in("model: ",model);
     in("year: ",year);
     
 }
-void sedan::displayInfo()
+void car::displayInfo()
 {
     out("a: ",a);
     out("model: ",model);
     out("year: ",year);
 }
-void suv::inputInfo()
+void truck::inputInfo()
 {
     in("b: ",b);
     in("model: ",model);
     in("year: ",year);
     
 }
-void suv::displayInfo()
+void truck::displayInfo()
 {
     out("b: ",b);
     out("model: ",model);
@@ -61,12 +61,12 @@ void suv::displayInfo()
 
 int main()
 {
-    vector<car*>data;
-    sedan se;
-    suv suv;
+    vector<vehicle*>data;
+    car se;
+    truck truck;
     data.push_back(&se);
-    data.push_back(&suv);
-    for(car *item: data)
+    data.push_back(&truck);
+    for(vehicle *item: data)
     {
         item->inputInfo();
         item->displayInfo();
