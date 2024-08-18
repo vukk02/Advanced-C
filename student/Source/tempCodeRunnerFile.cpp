@@ -1,0 +1,1 @@
+sortStudents(StudentManager::sortByName)
